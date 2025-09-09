@@ -1,0 +1,79 @@
+Table creation queries
+
+1 orders table
+
+CREATE TABLE orders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  total_amount REAL,
+  status TEXT,
+  shipping_address TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+  payment_type TEXT, 
+  coupon_code TEXT, 
+  discount_amount REAL DEFAULT 0
+);
+
+2 order items table
+
+CREATE TABLE order_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id INTEGER,
+  product_id INTEGER,
+  quantity INTEGER,
+  price REAL,
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+
+3 products table
+
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    price REAL NOT NULL,
+    image_url TEXT,
+    category TEXT,
+    available INTEGER NOT NULL DEFAULT 1
+);
+
+4 users table 
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    is_admin BOOLEAN NOT NULL, 
+	street_address TEXT, 
+	address_line_2 TEXT, 
+	city TEXT, 
+	state TEXT, 
+	postal_code TEXT, 
+	country TEXT, 
+	phone_number TEXT
+);
+
+5 feedback table
+
+CREATE TABLE feedback (
+  feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  rating INTEGER CHECK(rating >= 1 AND rating <= 5), 
+  comments TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+6 coupon table
+
+CREATE TABLE coupons (
+  coupon_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT UNIQUE NOT NULL,              
+  discount_type TEXT NOT NULL,            
+  discount_value REAL NOT NULL,           
+  active INTEGER NOT NULL DEFAULT 1       
+);
